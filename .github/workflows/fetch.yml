@@ -23,6 +23,8 @@ jobs:
 
       # - name: Install dependencies
       #   run: pnpm install
+      - name: To duckdb
+        uses: opt-nc/setup-duckdb-action@v1.0.11
 
       - name: Fetch data
         env:
@@ -43,6 +45,7 @@ jobs:
             yq '.flights.dep.body.flight' < flights.json > dep.json
             yq '.flights.arr.body.flight' < flights.json > arr.json
             rm flights.xml
+            duckdb flights.db < insert.sql
 
       - name: Commit and push if changed
         run: |
