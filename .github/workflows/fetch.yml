@@ -1,5 +1,7 @@
-name: Fetch
-on: workflow_dispatch
+name: 'Fetch data'
+on:
+  schedule:
+    - cron: '0 * * * *'
 jobs:
   fetch:
     runs-on: ubuntu-latest
