@@ -25,7 +25,10 @@ jobs:
       - name: Fetch data
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
-        run: curl -v "https://apigw.finavia.fi/flights/public/v0/flights/all/HEL" -H "Cache-Control: no-cache" -H "app_key: $APP_KEY" > flight.xml
+        run: |
+          curl -v "https://apigw.finavia.fi/flights/public/v0/flights/all/HEL" \
+            -H "Cache-Control: no-cache" \
+            -H "app_key: $APP_KEY" > flight.xml
 
       - name: Commit and push if changed
         run: |
