@@ -28,7 +28,19 @@ jobs:
         run: |
           curl -v "https://apigw.finavia.fi/flights/public/v0/flights/all/HEL" \
             -H "Cache-Control: no-cache" \
-            -H "app_key: $APP_KEY" > flight.xml
+            -H "app_key: $APP_KEY" > flights.xml
+
+      - name: To JSON
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq --xml-attribute-prefix @ \
+              --xml-content-name '#text' \
+              --input-format xml \
+              --output-format json flights.xml > flights.json
+            yq '.flights.dep.body.flight' < flights.json > dep.json
+            yq '.flights.arr.body.flight' < flights.json > arr.json
+            rm flights.xml
 
       - name: Commit and push if changed
         run: |
