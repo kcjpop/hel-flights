@@ -44,9 +44,10 @@ jobs:
             yq '.flights.arr.body.flight' < flights.json > arr.json
             rm flights.xml
 
-      - name: Insert data
+      - name: Handle data
         run: |
           duckdb flights.ddb < insert.sql
+          duckdb flights.ddb -json < gen.sql > heatmap.json
 
       - name: Commit and push if changed
         run: |
