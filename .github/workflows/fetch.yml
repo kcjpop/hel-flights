@@ -1,7 +1,8 @@
 name: 'Fetch data'
-on:
-  schedule:
-    - cron: '0 * * * *'
+on: workflow_dispatch
+# on:
+#   schedule:
+#     - cron: '0 * * * *'
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -23,7 +24,7 @@ jobs:
 
       # - name: Install dependencies
       #   run: pnpm install
-      - name: To duckdb
+      - name: Get duckdb
         uses: opt-nc/setup-duckdb-action@v1.0.11
 
       - name: Fetch data
@@ -45,7 +46,10 @@ jobs:
             yq '.flights.dep.body.flight' < flights.json > dep.json
             yq '.flights.arr.body.flight' < flights.json > arr.json
             rm flights.xml
-            duckdb flights.db < insert.sql
+
+      - name: Insert data
+        run: |
+          duckdb flights.db < insert.sql
 
       - name: Commit and push if changed
         run: |
