@@ -1,0 +1,57 @@
+name: 'Fetch data manually'
+on: workflow_dispatch
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - uses: pnpm/action-setup@v4
+      #   name: Install pnpm
+      #   with:
+      #     version: 10
+      #     run_install: false
+
+      # - name: Install Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 20
+      #     cache: 'pnpm'
+
+      # - name: Install dependencies
+      #   run: pnpm install
+      - name: Get duckdb
+        uses: opt-nc/setup-duckdb-action@v1.0.11
+
+      - name: Fetch data
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+        run: |
+          curl -v "https://apigw.finavia.fi/flights/public/v0/flights/all/HEL" \
+            -H "Cache-Control: no-cache" \
+            -H "app_key: $APP_KEY" > flights.xml
+
+      - name: To JSON
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq --xml-attribute-prefix @ \
+              --xml-content-name '#text' \
+              --input-format xml \
+              --output-format json flights.xml > flights.json
+            yq '.flights.dep.body.flight' < flights.json > dep.json
+            yq '.flights.arr.body.flight' < flights.json > arr.json
+            rm flights.xml
+
+      - name: Insert data
+        run: |
+          duckdb flights.ddb < insert.sql
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git add -A
+          git commit -m "Update data" || exit 0
+          git push
