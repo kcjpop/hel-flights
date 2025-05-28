@@ -49,7 +49,7 @@ jobs:
 
       - name: Insert data
         run: |
-          duckdb flights.db < insert.sql
+          duckdb flights.ddb < insert.sql
 
       - name: Commit and push if changed
         run: |
