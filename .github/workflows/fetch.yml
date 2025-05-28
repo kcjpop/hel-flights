@@ -28,7 +28,7 @@ jobs:
         with:
           timezoneLinux: 'Europe/Helsinki'
           timezoneMacos: 'Europe/Helsinki'
-          timezoneWindows: 'Europe/Helsinki'
+          timezoneWindows: 'FLE Standard Time'
 
       - name: Get duckdb
         uses: opt-nc/setup-duckdb-action@v1.0.11
