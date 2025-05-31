@@ -4,8 +4,15 @@ import { render } from 'https://esm.run/reefjs'
 app()
 
 async function app() {
-  const items = await fetch('./heatmap.json').then((res) => res.json())
+  const [arr, dep] = await Promise.all([
+    fetch('./arr-heatmap.json').then((res) => res.json()),
+    fetch('./dep-heatmap.json').then((res) => res.json()),
+  ])
+  Heatmap({ items: arr, nodeToRender: '#arr-heatmap' })
+  Heatmap({ items: dep, nodeToRender: '#dep-heatmap' })
+}
 
+function Heatmap({ items, nodeToRender }) {
   const max = Math.max(...items.map((d) => d.cnt))
 
   const color = scaleLinear(
@@ -20,6 +27,14 @@ async function app() {
 
     days.set(item.d, box)
   }
+
+  const d = new Date()
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+    2,
+    '0',
+  )}-${String(d.getDate()).padStart(2, '0')}`
+
+  console.log(today)
 
   const yAxis = `<ul class="day">
     <li class="hour" style="background:none;border-color: #fff;">0</li>
@@ -49,7 +64,7 @@ async function app() {
   </ul>`
 
   render(
-    '#app',
+    nodeToRender,
     yAxis +
       Array.from(days.entries())
         .map(([day, values]) => {
@@ -68,7 +83,7 @@ async function app() {
         return `<li class="hour" style="${style}">${v?.cnt ?? ''}</li>`
       }).join('')}
 
-      <li style="writing-mode: vertical-lr;">${day}</li>
+      <li class="label" data-today="${day === today}">${day}</li>
       </ul>`
         })
         .join(''),

@@ -56,7 +56,8 @@ jobs:
       - name: Handle data
         run: |
           duckdb flights.ddb < insert.sql
-          duckdb flights.ddb -json < gen.sql > heatmap.json
+          duckdb flights.ddb -json < arr-heatmap.sql > arr-heatmap.json
+          duckdb flights.ddb -json < dep-heatmap.sql > dep-heatmap.json
 
       - name: Commit and push if changed
         run: |

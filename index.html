@@ -8,7 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HEL flights</title>
     <style>
-      .app {
+      main {
+        display: flex;
+        gap: 1rem;
+        overflow: auto;
+      }
+
+      .heatmap {
         --gap: 2px;
 
         display: flex;
@@ -39,10 +45,41 @@
         background-color: rgb(241, 243, 245);
         border: 1px solid rgb(206, 212, 218);
       }
+
+      .label {
+        text-orientation: sideways;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        line-height: 1.7;
+        margin-inline-start: 1ch;
+        padding-inline: 1ch;
+
+        &[data-today='true'] {
+          font-weight: 600;
+          color: #fff;
+          background-color: #333;
+        }
+      }
     </style>
   </head>
   <body>
-    <div id="app" class="app"></div>
+    <main>
+      <article>
+        <header>
+          <h2>Departures</h2>
+        </header>
+
+        <div class="heatmap" id="dep-heatmap"></div>
+      </article>
+
+      <article>
+        <header>
+          <h2>Arrivals</h2>
+        </header>
+
+        <div class="heatmap" id="arr-heatmap"></div>
+      </article>
+    </main>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
