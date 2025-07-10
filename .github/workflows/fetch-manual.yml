@@ -28,7 +28,7 @@ jobs:
           timezoneWindows: 'FLE Standard Time'
 
       - name: Get duckdb
-        uses: opt-nc/setup-duckdb-action@v1.0.11
+        uses: opt-nc/setup-duckdb-action@v1.0.14
 
       - name: Fetch data
         env:
