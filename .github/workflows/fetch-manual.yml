@@ -52,9 +52,13 @@ jobs:
 
       - name: Handle data
         run: |
-          duckdb flights.ddb < insert.sql
-          duckdb flights.ddb -json < arr-heatmap.sql > arr-heatmap.json
-          duckdb flights.ddb -json < dep-heatmap.sql > dep-heatmap.json
+          DB_FOLDER=$(date "+%Y/%m")
+          mkdir -p $DB_FOLDER
+
+          duckdb $DB_FOLDER/flights.ddb < schema.sql
+          duckdb $DB_FOLDER/flights.ddb < insert.sql
+          duckdb $DB_FOLDER/flights.ddb -json < arr-heatmap.sql > arr-heatmap.json
+          duckdb $DB_FOLDER/flights.ddb -json < dep-heatmap.sql > dep-heatmap.json
 
       - name: Commit and push if changed
         run: |

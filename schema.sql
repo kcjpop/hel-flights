@@ -1,4 +1,4 @@
-create or replace table dep(
+create table if not exists dep(
     h_apt text,
     fltnr text,
     sdt timestamptz,
@@ -47,7 +47,7 @@ create or replace table dep(
     PRIMARY KEY (fltnr, sdt)
 );
 
-create or replace table arr(
+create table if not exists arr(
   h_apt text,
   fltnr text,
   sdt timestamptz,
