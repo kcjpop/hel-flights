@@ -52,7 +52,7 @@ jobs:
 
       - name: Handle data
         run: |
-          DB_FOLDER=$(date "+%Y/%m")
+          DB_FOLDER=$(date "+%Y/w%V")
           mkdir -p $DB_FOLDER
 
           duckdb $DB_FOLDER/flights.ddb < schema.sql
