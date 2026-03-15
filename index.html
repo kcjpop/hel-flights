@@ -27,9 +27,12 @@
       }
 
       .day {
-        list-style-type: '';
         margin: 0;
         padding: 0;
+
+        & li {
+          list-style-type: '';
+        }
 
         & * + * {
           margin-block-start: var(--gap);
