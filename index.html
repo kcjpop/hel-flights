@@ -5,6 +5,7 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 16 16'><text x='0' y='14'>🛫</text></svg>" />
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HEL flights</title>
     <style>
@@ -69,7 +70,7 @@
           <h2>Departures</h2>
         </header>
 
-        <div class="heatmap" id="dep-heatmap"></div>
+        <div class="heatmap" id="dep-heatmap">Generating…</div>
       </article>
 
       <article>
@@ -77,7 +78,7 @@
           <h2>Arrivals</h2>
         </header>
 
-        <div class="heatmap" id="arr-heatmap"></div>
+        <div class="heatmap" id="arr-heatmap">Generating…</div>
       </article>
     </main>
     <script type="module" src="./main.js"></script>
