@@ -13,8 +13,9 @@ jobs:
           timezoneMacos: 'Europe/Helsinki'
           timezoneWindows: 'FLE Standard Time'
 
-      - name: Get duckdb
-        uses: opt-nc/setup-duckdb-action@v1.0.14
+      - name: Install duckdb
+        run: |
+          DUCKDB_VERSION=1.5.2 sh ./install-duckdb.sh
 
       - name: Fetch data
         env:
