@@ -43,10 +43,10 @@ jobs:
 
           duckdb $DB_FOLDER/flights.ddb < schema.sql
           duckdb $DB_FOLDER/flights.ddb < insert.sql
-          duckdb $DB_FOLDER/flights.ddb -json < arr-heatmap.sql > arr-heatmap.json
-          duckdb $DB_FOLDER/flights.ddb -json < dep-heatmap.sql > dep-heatmap.json
-          duckdb $DB_FOLDER/flights.ddb -json < arr-destinations.sql > arr-destinations.json
-          duckdb $DB_FOLDER/flights.ddb -json < dep-destinations.sql > dep-destinations.json
+          duckdb $DB_FOLDER/flights.ddb -json < arr-heatmap.sql > $DB_FOLDER/arr-heatmap.json
+          duckdb $DB_FOLDER/flights.ddb -json < dep-heatmap.sql > $DB_FOLDER/dep-heatmap.json
+          duckdb $DB_FOLDER/flights.ddb -json < arr-destinations.sql > $DB_FOLDER/arr-destinations.json
+          duckdb $DB_FOLDER/flights.ddb -json < dep-destinations.sql > $DB_FOLDER/dep-destinations.json
 
       - name: Commit and push if changed
         run: |
