@@ -1,47 +1,61 @@
 import { Card, Tab, TabList, TabPanel, Select } from 'kinu'
-import { useState } from 'preact/hooks'
+import { useContext } from 'preact/hooks'
+import { useSignal } from '@preact/signals'
 import { html } from 'htm/preact'
 
-import { FlightHeatmap } from './FlightHeatmap.js'
-import { DestinationList } from './DestinationList.js'
+import { AppStateContext } from './app-state.js'
 import { getISOWeekNumber } from './helpers.js'
+import { DestinationList } from './DestinationList.js'
+import { FlightHeatmap } from './FlightHeatmap.js'
 
-export function App({ data: { arr, arrDest, dep, depDest } }) {
-  const [activeTab, setActiveTab] = useState('arr')
-  const [currentWeekNumber, setCurrentWeekNumber] = useState(
-    getISOWeekNumber(new Date()),
-  )
+export function App() {
+  const state = useContext(AppStateContext)
+
+  const activeTab = useSignal('arr')
 
   const doSwitchTab = (tabName) => () => {
-    setActiveTab(tabName)
+    activeTab.value = tabName
+  }
+
+  const doChangeWeek = (e) => {
+    state.changeWeekNumber(Number(e.target.value))
   }
 
   return html`
-    <${WeekSelect} value=${currentWeekNumber} />
+    <${WeekSelect}
+      value=${state.currentWeekNumber.value}
+      onChange=${doChangeWeek}
+    />
 
     ${' '}
 
     <${TabList} role="tablist">
       <${Tab}
         role="tab"
-        aria-selected=${activeTab === 'arr'}
+        aria-selected=${activeTab.value === 'arr'}
         onClick=${doSwitchTab('arr')}
       >
         Arrivals
       <//>
       <${Tab}
         role="tab"
-        aria-selected=${activeTab === 'dep'}
+        aria-selected=${activeTab.value === 'dep'}
         onClick=${doSwitchTab('dep')}
       >
         Departures
       <//>
     <//>
 
-    ${activeTab === 'arr' &&
-    html`<${Arrivals} flights=${arr} destinations=${arrDest} />`}
-    ${activeTab === 'dep' &&
-    html`<${Departures} flights=${dep} destinations=${depDest} />`}
+    ${activeTab.value === 'arr' &&
+    html`<${Arrivals}
+      flights=${state.arr.value}
+      destinations=${state.arrDest.value}
+    />`}
+    ${activeTab.value === 'dep' &&
+    html`<${Departures}
+      flights=${state.dep.value}
+      destinations=${state.depDest.value}
+    />`}
   `
 }
 
@@ -50,8 +64,9 @@ export function App({ data: { arr, arrDest, dep, depDest } }) {
  *
  * @param {object} props
  * @param {number} props.value The currently selected week
+ * @param {function} props.onChange
  */
-function WeekSelect({ value }) {
+function WeekSelect({ value, onChange }) {
   const options = Array.from(
     { length: getISOWeekNumber(new Date()) },
     (_, i) =>
@@ -60,7 +75,7 @@ function WeekSelect({ value }) {
       </option>`,
   )
 
-  return html`<${Select}>${options}<//>`
+  return html`<${Select} onChange=${onChange}>${options}<//>`
 }
 
 function Arrivals({ flights, destinations }) {

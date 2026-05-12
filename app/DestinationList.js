@@ -1,5 +1,5 @@
 import { Table, Card, Button } from 'kinu'
-import { useState } from 'preact/hooks'
+import { useSignal } from '@preact/signals'
 import { html } from 'htm/preact'
 
 export function DestinationList({ header, destinations }) {
@@ -25,15 +25,17 @@ export function DestinationList({ header, destinations }) {
 }
 
 function DestimationRows({ destinations }) {
-  const [showAll, setShowAll] = useState(false)
+  const showAll = useSignal(false)
 
-  const doToggleShowAll = () => setShowAll(!showAll)
+  const doToggleShowAll = () => {
+    showAll.value = !showAll.value
+  }
 
   if (destinations.length < 10) {
     return html`<${Rows} destinations=${destinations} />`
   }
 
-  if (showAll) {
+  if (showAll.value) {
     return html`
       <${Rows} destinations=${destinations} />
       <tr>

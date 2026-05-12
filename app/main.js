@@ -1,20 +1,19 @@
 import { render } from 'preact'
 import { html } from 'htm/preact'
+import { useContext } from 'preact/hooks'
 
 import { App } from './App.js'
+import { AppStateContext, AppStateModel } from './app-state.js'
 
 app()
 
 async function app() {
-  const [arr, dep, arrDest, depDest] = await Promise.all([
-    fetch('./arr-heatmap.json').then((res) => res.json()),
-    fetch('./dep-heatmap.json').then((res) => res.json()),
-    fetch('./arr-destinations.json').then((res) => res.json()),
-    fetch('./dep-destinations.json').then((res) => res.json()),
-  ])
+  const appState = new AppStateModel()
 
   render(
-    html`<${App} data=${{ arr, arrDest, dep, depDest }} />`,
+    html` <${AppStateContext.Provider} value=${appState}>
+      <${App} />
+    <//>`,
     document.getElementById('app'),
   )
 }
