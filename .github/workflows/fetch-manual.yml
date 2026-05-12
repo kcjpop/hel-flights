@@ -48,6 +48,10 @@ jobs:
           duckdb $DB_FOLDER/flights.ddb -json < arr-destinations.sql > $DB_FOLDER/arr-destinations.json
           duckdb $DB_FOLDER/flights.ddb -json < dep-destinations.sql > $DB_FOLDER/dep-destinations.json
 
+      - name: Clean up
+        run: |
+          rm flights.json dep.json arr.json
+
       - name: Commit and push if changed
         run: |
           git config --global user.name "${{ github.actor }}"
