@@ -16,7 +16,7 @@ jobs:
       - name: Install duckdb
         run: |
           DUCKDB_VERSION=1.5.2 sh ./install-duckdb.sh
-          export PATH="/home/runner/.duckdb/cli/latest":$PATH
+          ln -s ~/.duckdb/cli/latest/duckdb /usr/local/bin/duckdb
 
       - name: Fetch data
         env:
