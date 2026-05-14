@@ -1,77 +1,10 @@
-name: 'Fetch data'
-# on: workflow_dispatch
+name: 'Cron fetch data'
 on:
   schedule:
     - cron: '0 */3 * * *'
 jobs:
-  fetch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set timezone
-        run: |
-          sudo timedatectl set-timezone Europe/Helsinki
-
-      - name: Cache duckdb
-        id: cache-duckdb
-        uses: actions/cache@v5
-        with:
-          path: ~/.duckdb
-          key: ${{ runner.os }}-duckdb
-          restore-keys: |
-            ${{ runner.os }}-duckdb
-
-      - name: Install duckdb
-        if: steps.cache-duckdb.outputs.cache-hit != 'true'
-        run: |
-          DUCKDB_VERSION=1.5.2 sh ./install-duckdb.sh
-
-      - name: Symlink duckdb
-        run: |
-          ln -s ~/.duckdb/cli/latest/duckdb /usr/local/bin/duckdb
-
-      - name: Fetch data
-        env:
-          APP_KEY: ${{ secrets.APP_KEY }}
-        run: |
-          curl -v "https://apigw.finavia.fi/flights/public/v0/flights/all/HEL" \
-            -H "Cache-Control: no-cache" \
-            -H "app_key: $APP_KEY" > flights.xml
-
-      - name: To JSON
-        uses: mikefarah/yq@master
-        with:
-          cmd: |
-            yq --xml-attribute-prefix @ \
-              --xml-content-name '#text' \
-              --input-format xml \
-              --output-format json flights.xml > flights.json
-            yq '.flights.dep.body.flight' < flights.json > dep.json
-            yq '.flights.arr.body.flight' < flights.json > arr.json
-            rm flights.xml
-
-      - name: Handle data
-        run: |
-          DB_FOLDER=$(date "+%Y/w%V")
-          mkdir -p $DB_FOLDER
-
-          duckdb $DB_FOLDER/flights.ddb < schema.sql
-          duckdb $DB_FOLDER/flights.ddb < insert.sql
-          duckdb $DB_FOLDER/flights.ddb -json < arr-heatmap.sql > $DB_FOLDER/arr-heatmap.json
-          duckdb $DB_FOLDER/flights.ddb -json < dep-heatmap.sql > $DB_FOLDER/dep-heatmap.json
-          duckdb $DB_FOLDER/flights.ddb -json < arr-destinations.sql > $DB_FOLDER/arr-destinations.json
-          duckdb $DB_FOLDER/flights.ddb -json < dep-destinations.sql > $DB_FOLDER/dep-destinations.json
-
-      - name: Clean up
-        run: |
-          rm flights.json dep.json arr.json
-
-      - name: Commit and push if changed
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git add -A
-          git commit -m "Update data" || exit 0
-          git push
+  cron-fetch:
+    uses: ./.github/workflows/base.yml
+    secrets: inherit
+    with:
+      commit_msg: 'Update data automatically'

@@ -1,6 +1,8 @@
-name: 'Fetch data manually'
+name: 'Manual fetch data'
 on: workflow_dispatch
 jobs:
-  fetch:
+  manual-fetch:
     uses: ./.github/workflows/base.yml
     secrets: inherit
+    with:
+      commit_msg: 'Update data manually'
