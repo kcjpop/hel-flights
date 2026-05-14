@@ -2,7 +2,7 @@ name: 'Fetch data'
 # on: workflow_dispatch
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */3 * * *'
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -10,14 +10,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: 'Europe/Helsinki'
-          timezoneMacos: 'Europe/Helsinki'
-          timezoneWindows: 'FLE Standard Time'
+      - name: Set timezone
+        run: |
+          sudo timedatectl set-timezone Europe/Helsinki
 
-      - name: Get duckdb
-        uses: opt-nc/setup-duckdb-action@v1.0.14
+      - name: Cache duckdb
+        id: cache-duckdb
+        uses: actions/cache@v5
+        with:
+          path: ~/.duckdb
+          key: ${{ runner.os }}-duckdb
+          restore-keys: |
+            ${{ runner.os }}-duckdb
+
+      - name: Install duckdb
+        if: steps.cache-duckdb.outputs.cache-hit != 'true'
+        run: |
+          DUCKDB_VERSION=1.5.2 sh ./install-duckdb.sh
+
+      - name: Symlink duckdb
+        run: |
+          ln -s ~/.duckdb/cli/latest/duckdb /usr/local/bin/duckdb
 
       - name: Fetch data
         env:
