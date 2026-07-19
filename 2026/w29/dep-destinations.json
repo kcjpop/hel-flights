@@ -1,6 +1,6 @@
 [{"destination_code":"ARN","destination_name":"Stockholm Arlanda","flight_count":103},
 {"destination_code":"TLL","destination_name":"Tallinn","flight_count":77},
-{"destination_code":"RIX","destination_name":"Riga","flight_count":63},
+{"destination_code":"RIX","destination_name":"Riga","flight_count":64},
 {"destination_code":"CPH","destination_name":"Copenhagen","flight_count":62},
 {"destination_code":"OUL","destination_name":"Oulu","flight_count":43},
 {"destination_code":"MUC","destination_name":"Munich","flight_count":41},
